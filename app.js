@@ -31,11 +31,11 @@ function tempoRelativo(valor) {
 function normalizarElogio(item, index) {
   return {
     de: item.de || item.enviadoPor || "Equipe",
-    para: item.para || item.destinatario || "Colaborador(a)",
-    mensagem: item.mensagem || "",
-    tempo: item.tempo || tempoRelativo(item.dataElogio || item.data || item.createdAt),
-    emoji: item.emoji || EMOJIS[index % EMOJIS.length],
-    tonalidade: item.tonalidade || PALETAS[index % PALETAS.length]
+    para: item.para || item.Title || "Colaborador(a)",
+    mensagem: item.mensagem || item.Mensagem || "",
+    tempo: tempoRelativo(item.dataElogio || item.DataElogio),
+    emoji: EMOJIS[index % EMOJIS.length],
+    tonalidade: PALETAS[index % PALETAS.length]
   };
 }
 
@@ -44,7 +44,7 @@ function montarCard(item) {
     <article class="card-elogiado ${escaparHtml(item.tonalidade)}">
       <div class="card-topo">
         <div class="card-topo-esquerda">
-          <div class="card-emoji" aria-hidden="true">${escaparHtml(item.emoji)}</div>
+          <div class="card-emoji">${escaparHtml(item.emoji)}</div>
           <div>
             <p class="card-legenda">Para</p>
             <h3 class="card-nome">${escaparHtml(item.para)}</h3>
@@ -71,45 +71,41 @@ function renderizarMural(lista) {
   if (!mural) return;
 
   if (!Array.isArray(lista) || lista.length === 0) {
-    mural.innerHTML = '<div class="estado-vazio">Ainda não há elogios publicados. Seja a primeira pessoa a reconhecer alguém do time.</div>';
+    mural.innerHTML =
+      '<div class="estado-vazio">Ainda não há elogios publicados.</div>';
     return;
   }
 
-  mural.innerHTML = lista.map((item, index) => montarCard(normalizarElogio(item, index))).join("");
+  mural.innerHTML = lista
+    .map((item, index) => montarCard(normalizarElogio(item, index)))
+    .join("");
 }
 
+// ===== MOCK =====
 async function carregarMock() {
   const resposta = await fetch("sample-data.json", { cache: "no-store" });
-  if (!resposta.ok) throw new Error("Não foi possível carregar o mock.");
   return resposta.json();
 }
 
+// ===== LOAD =====
 async function carregarMural() {
   try {
-    let dados = [];
-
-    if (window.CONFIG?.usarMock || !window.CONFIG?.endpointLeitura) {
-      dados = await carregarMock();
-    } else {
-      const resposta = await fetch(window.CONFIG.endpointLeitura, { method: "GET" });
-      if (!resposta.ok) throw new Error("Falha ao carregar elogios.");
-      dados = await resposta.json();
-    }
-
+    const dados = await carregarMock(); // mantém mock por enquanto
     renderizarMural(dados);
   } catch (erro) {
     console.error(erro);
-    renderizarMural([]);
   }
 }
 
+// ===== STATUS =====
 function definirStatus(texto = "", tipo = "") {
   const status = document.getElementById("statusMensagem");
   if (!status) return;
   status.textContent = texto;
-  status.className = "status-mensagem" + (tipo ? ` ${tipo}` : "");
+  status.className = "status-mensagem " + tipo;
 }
 
+// ===== ENVIO REAL (FLOW) =====
 async function enviarElogio(evento) {
   evento.preventDefault();
 
@@ -121,53 +117,44 @@ async function enviarElogio(evento) {
   const mensagem = document.getElementById("mensagem").value.trim();
 
   if (!de || !para || !mensagem) {
-    definirStatus("Preencha todos os campos antes de publicar o elogio.", "error");
+    definirStatus("Preencha todos os campos.", "error");
     return;
   }
 
   botao.disabled = true;
-  definirStatus("Enviando elogio...", "");
-
-  const payload = {
-    de,
-    para,
-    mensagem,
-    dataElogio: new Date().toISOString()
-  };
+  definirStatus("Enviando...", "");
 
   try {
-    if (window.CONFIG?.usarMock || !window.CONFIG?.endpointEnvio) {
-      definirStatus("Modo de demonstração: elogio simulado com sucesso.", "success");
-      formulario.reset();
-      await carregarMural();
-    } else {
-      const resposta = await fetch(window.CONFIG.endpointEnvio, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+    const resposta = await fetch(window.CONFIG.endpointEnvio, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        de: de,
+        para: para,
+        mensagem: mensagem
+      })
+    });
 
-      if (!resposta.ok) throw new Error("Falha no envio.");
+    if (!resposta.ok) throw new Error("Erro no envio");
 
-      definirStatus("Elogio publicado com sucesso.", "success");
-      formulario.reset();
-      await carregarMural();
-    }
+    definirStatus("Elogio enviado com sucesso!", "success");
+    formulario.reset();
+
   } catch (erro) {
     console.error(erro);
-    definirStatus("Não foi possível enviar agora. Tente novamente.", "error");
+    definirStatus("Erro ao enviar. Tente novamente.", "error");
   } finally {
     botao.disabled = false;
   }
 }
 
+// ===== INIT =====
 document.addEventListener("DOMContentLoaded", () => {
-  const formulario = document.getElementById("formElogio");
-  if (formulario) {
-    formulario.addEventListener("submit", enviarElogio);
-  }
+  document
+    .getElementById("formElogio")
+    .addEventListener("submit", enviarElogio);
 
   carregarMural();
 });

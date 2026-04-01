@@ -1,0 +1,18 @@
+body {
+  font-family: Arial;
+  background: #f7f8fc;
+}
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+.form input, .form textarea {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+}
+.card {
+  border: 1px solid #ddd;
+  margin-top: 10px;
+  padding: 10px;
+}

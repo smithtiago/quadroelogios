@@ -1,0 +1,416 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-page: #f5f7fb;
+  --bg-surface: #ffffff;
+  --bg-soft: #fafbfe;
+  --line: #dce3f1;
+  --line-soft: #e8edf7;
+  --text: #1f2430;
+  --text-soft: #5f6b82;
+  --brand: #242362;
+  --brand-2: #312c7d;
+  --hero-end: #3a3690;
+
+  --pastel-1: #eef2ff;
+  --pastel-2: #f2f6ff;
+  --pastel-3: #f6f3ff;
+  --pastel-4: #eef7ff;
+
+  --shadow-main: 0 14px 45px rgba(36, 35, 98, 0.08);
+  --shadow-card: 0 14px 30px rgba(36, 35, 98, 0.08);
+  --radius: 2px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-page);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+body {
+  padding: 24px;
+}
+
+.elogios-home {
+  max-width: 1180px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-main);
+}
+
+.elogios-hero {
+  padding: 32px;
+  border-bottom: 1px solid var(--line-soft);
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 56%, var(--hero-end) 100%);
+}
+
+.elogios-hero__content {
+  max-width: 720px;
+}
+
+.elogios-hero h1 {
+  margin: 0;
+  font-size: 52px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.elogios-hero p {
+  margin: 14px 0 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.elogios-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+}
+
+.elogios-formulario {
+  padding: 28px;
+  background: var(--bg-soft);
+  border-right: 1px solid var(--line-soft);
+}
+
+.bloco-titulo,
+.mural-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.bloco-titulo h2,
+.mural-topo h2 {
+  margin: 0;
+  color: var(--brand);
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.bloco-titulo p,
+.mural-topo p {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.icone-destaque {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--pastel-1);
+  color: var(--brand);
+  font-size: 20px;
+}
+
+#formElogio {
+  margin-top: 22px;
+}
+
+.campo {
+  margin-bottom: 16px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.campo input,
+.campo textarea {
+  width: 100%;
+  border: 1px solid #d8e0ef;
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--text);
+  font: inherit;
+  padding: 14px 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: #7f8aa0;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+  border-color: #aebbe0;
+  box-shadow: 0 0 0 3px rgba(36, 35, 98, 0.08);
+}
+
+.campo textarea {
+  resize: vertical;
+  min-height: 132px;
+}
+
+#btnEnviar {
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--brand);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: transform 0.16s ease, opacity 0.16s ease;
+  box-shadow: 0 10px 25px rgba(36, 35, 98, 0.18);
+}
+
+#btnEnviar:hover {
+  transform: translateY(-1px);
+}
+
+#btnEnviar:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.status-mensagem {
+  min-height: 20px;
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.status-mensagem.success {
+  color: #1f6f43;
+}
+
+.status-mensagem.error {
+  color: #b42318;
+}
+
+.texto-apoio {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #e2e8f5;
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.elogios-mural {
+  padding: 28px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.card-elogiado {
+  border: 1px solid #e4eaf5;
+  border-radius: var(--radius);
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(36, 35, 98, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-elogiado:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.card-elogiado.pastel-1 { background: var(--pastel-1); }
+.card-elogiado.pastel-2 { background: var(--pastel-2); }
+.card-elogiado.pastel-3 { background: var(--pastel-3); }
+.card-elogiado.pastel-4 { background: var(--pastel-4); }
+
+.card-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.card-topo-esquerda {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.card-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border: 1px solid #e4eaf5;
+  border-radius: var(--radius);
+  background: #ffffff;
+  font-size: 24px;
+}
+
+.card-legenda {
+  margin: 0 0 4px;
+  font-size: 11px;
+  line-height: 1;
+  color: #8a94a8;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.card-nome {
+  margin: 0;
+  color: var(--brand);
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.card-tempo {
+  flex-shrink: 0;
+  border: 1px solid #e4eaf5;
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: #657189;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+}
+
+.card-mensagem {
+  min-height: 104px;
+  margin: 0;
+  color: #4d5a73;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.card-rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.88);
+}
+
+.card-remetente p {
+  margin: 0 0 4px;
+  font-size: 11px;
+  line-height: 1;
+  color: #8a94a8;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.card-remetente strong {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.card-tag {
+  border: 1px solid #e4eaf5;
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.estado-vazio {
+  grid-column: 1 / -1;
+  border: 1px dashed #ccd5e8;
+  border-radius: var(--radius);
+  background: #fafbfe;
+  padding: 24px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+@media (max-width: 980px) {
+  .elogios-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .elogios-formulario {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .elogios-hero h1 {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 14px;
+  }
+
+  .elogios-hero,
+  .elogios-formulario,
+  .elogios-mural {
+    padding: 18px;
+  }
+
+  .elogios-hero h1 {
+    font-size: 32px;
+  }
+
+  .bloco-titulo h2,
+  .mural-topo h2 {
+    font-size: 22px;
+  }
+
+  .card-topo,
+  .card-rodape {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card-tag,
+  .card-tempo {
+    width: fit-content;
+  }
+
+  .card-mensagem {
+    min-height: auto;
+  }
+}

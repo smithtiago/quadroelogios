@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quadro de elogios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section class="elogios-home" aria-labelledby="titulo-elogios">
+    <div class="elogios-hero">
+      <div class="elogios-hero__content">
+        <h1 id="titulo-elogios">Quadro de elogios</h1>
+        <p>
+          Reconheça quem fez a diferença no seu dia, valorize boas parcerias e
+          compartilhe mensagens que fortaleçam o espírito de equipe.
+        </p>
+      </div>
+    </div>
+
+    <div class="elogios-grid">
+      <aside class="elogios-formulario">
+        <div class="bloco-titulo">
+          <div>
+            <h2>Enviar elogio</h2>
+            <p>Envie uma mensagem para reconhecer o apoio, a parceria e as conquistas do time.</p>
+          </div>
+          <div class="icone-destaque" aria-hidden="true">✦</div>
+        </div>
+
+        <form id="formElogio" novalidate>
+          <div class="campo">
+            <label for="de">Seu nome</label>
+            <input id="de" name="de" type="text" placeholder="Ex.: Camila" required />
+          </div>
+
+          <div class="campo">
+            <label for="para">Para quem?</label>
+            <input id="para" name="para" type="text" placeholder="Ex.: Rafa" required />
+          </div>
+
+          <div class="campo">
+            <label for="mensagem">Mensagem</label>
+            <textarea id="mensagem" name="mensagem" rows="5" placeholder="Escreva um elogio carinhoso e objetivo..." required></textarea>
+          </div>
+
+          <button id="btnEnviar" type="submit">Publicar elogio</button>
+          <p id="statusMensagem" class="status-mensagem" aria-live="polite"></p>
+        </form>
+
+        <div class="texto-apoio">
+          Seu reconhecimento aparece no mural e ajuda a espalhar boas histórias,
+          colaboração e energia positiva pela equipe.
+        </div>
+      </aside>
+
+      <div class="elogios-mural">
+        <div class="mural-topo">
+          <div>
+            <h2>Reconhecimentos recentes</h2>
+            <p>Mensagens recentes para celebrar quem contribui, apoia e faz a diferença no dia a dia.</p>
+          </div>
+        </div>
+
+        <div id="mural" class="cards-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -87,14 +87,6 @@ async function carregarMock() {
   return resposta.json();
 }
 
-function extrairListaRespostaLeitura(data) {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.value)) return data.value;
-  if (Array.isArray(data?.body?.value)) return data.body.value;
-  if (Array.isArray(data?.d?.results)) return data.d.results;
-  return [];
-}
-
 async function carregarMural() {
   try {
     if (window.CONFIG?.endpointLeitura) {
@@ -113,8 +105,8 @@ async function carregarMural() {
         throw new Error(`Erro na leitura: ${resposta.status}`);
       }
 
-      const data = await resposta.json();
-      const dados = extrairListaRespostaLeitura(data);
+      const dados = await resposta.json();
+      console.log("DADOS RECEBIDOS:", dados);
       renderizarMural(dados);
       return;
     }

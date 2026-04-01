@@ -30,12 +30,12 @@ function tempoRelativo(valor) {
 
 function normalizarElogio(item, index) {
   return {
-    de: item.de || item.enviadoPor || "Equipe",
-    para: item.para || item.Title || "Colaborador(a)",
+    de: item.de || item.enviadoPor || item.EnviadoPor || "Equipe",
+    para: item.para || item.Title || item.Para || "Colaborador(a)",
     mensagem: item.mensagem || item.Mensagem || "",
     tempo: tempoRelativo(item.dataElogio || item.DataElogio),
-    emoji: EMOJIS[index % EMOJIS.length],
-    tonalidade: PALETAS[index % PALETAS.length]
+    emoji: item.emoji || EMOJIS[index % EMOJIS.length],
+    tonalidade: item.tonalidade || PALETAS[index % PALETAS.length]
   };
 }
 
@@ -81,31 +81,29 @@ function renderizarMural(lista) {
     .join("");
 }
 
-// ===== MOCK =====
 async function carregarMock() {
   const resposta = await fetch("sample-data.json", { cache: "no-store" });
+  if (!resposta.ok) throw new Error("Não foi possível carregar o mock.");
   return resposta.json();
 }
 
-// ===== LOAD =====
 async function carregarMural() {
   try {
-    const dados = await carregarMock(); // mantém mock por enquanto
+    const dados = await carregarMock();
     renderizarMural(dados);
   } catch (erro) {
-    console.error(erro);
+    console.error("Erro ao carregar mural:", erro);
+    renderizarMural([]);
   }
 }
 
-// ===== STATUS =====
 function definirStatus(texto = "", tipo = "") {
   const status = document.getElementById("statusMensagem");
   if (!status) return;
   status.textContent = texto;
-  status.className = "status-mensagem " + tipo;
+  status.className = "status-mensagem" + (tipo ? ` ${tipo}` : "");
 }
 
-// ===== ENVIO REAL (FLOW) =====
 async function enviarElogio(evento) {
   evento.preventDefault();
 
@@ -121,40 +119,54 @@ async function enviarElogio(evento) {
     return;
   }
 
+  if (!window.CONFIG || !window.CONFIG.endpointEnvio) {
+    definirStatus("Endpoint do Flow não configurado.", "error");
+    return;
+  }
+
   botao.disabled = true;
   definirStatus("Enviando...", "");
 
   try {
+    const payload = {
+      "de": de,
+      "para": para,
+      "mensagem": mensagem
+    };
+
+    console.log("Payload enviado:", payload);
+    console.log("Endpoint usado:", window.CONFIG.endpointEnvio);
+
     const resposta = await fetch(window.CONFIG.endpointEnvio, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/plain, */*"
       },
-      body: JSON.stringify({
-        de: de,
-        para: para,
-        mensagem: mensagem
-      })
+      body: JSON.stringify(payload)
     });
 
-    if (!resposta.ok) throw new Error("Erro no envio");
+    if (!resposta.ok) {
+      const textoErro = await resposta.text();
+      console.error("Erro HTTP:", resposta.status, textoErro);
+      throw new Error(`Erro no envio: ${resposta.status}`);
+    }
 
     definirStatus("Elogio enviado com sucesso!", "success");
     formulario.reset();
-
   } catch (erro) {
-    console.error(erro);
+    console.error("Erro no envio", erro);
     definirStatus("Erro ao enviar. Tente novamente.", "error");
   } finally {
     botao.disabled = false;
   }
 }
 
-// ===== INIT =====
 document.addEventListener("DOMContentLoaded", () => {
-  document
-    .getElementById("formElogio")
-    .addEventListener("submit", enviarElogio);
+  const formulario = document.getElementById("formElogio");
+  if (formulario) {
+    formulario.addEventListener("submit", enviarElogio);
+  }
 
   carregarMural();
 });

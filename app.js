@@ -33,7 +33,7 @@ function normalizarElogio(item, index) {
     de: item.de || item.enviadoPor || item.EnviadoPor || "Equipe",
     para: item.para || item.Title || item.Para || "Colaborador(a)",
     mensagem: item.mensagem || item.Mensagem || "",
-    tempo: tempoRelativo(item.dataElogio || item.DataElogio),
+    tempo: tempoRelativo(item.dataElogio || item.DataElogio || item.Created),
     emoji: item.emoji || EMOJIS[index % EMOJIS.length],
     tonalidade: item.tonalidade || PALETAS[index % PALETAS.length]
   };
@@ -87,13 +87,49 @@ async function carregarMock() {
   return resposta.json();
 }
 
+function extrairListaRespostaLeitura(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.value)) return data.value;
+  if (Array.isArray(data?.body?.value)) return data.body.value;
+  if (Array.isArray(data?.d?.results)) return data.d.results;
+  return [];
+}
+
 async function carregarMural() {
   try {
+    if (window.CONFIG?.endpointLeitura) {
+      const resposta = await fetch(window.CONFIG.endpointLeitura, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json, text/plain, */*"
+        },
+        body: JSON.stringify({})
+      });
+
+      if (!resposta.ok) {
+        const textoErro = await resposta.text();
+        console.error("Erro HTTP leitura:", resposta.status, textoErro);
+        throw new Error(`Erro na leitura: ${resposta.status}`);
+      }
+
+      const data = await resposta.json();
+      const dados = extrairListaRespostaLeitura(data);
+      renderizarMural(dados);
+      return;
+    }
+
     const dados = await carregarMock();
     renderizarMural(dados);
   } catch (erro) {
     console.error("Erro ao carregar mural:", erro);
-    renderizarMural([]);
+
+    try {
+      const mock = await carregarMock();
+      renderizarMural(mock);
+    } catch {
+      renderizarMural([]);
+    }
   }
 }
 
@@ -119,7 +155,7 @@ async function enviarElogio(evento) {
     return;
   }
 
-  if (!window.CONFIG || !window.CONFIG.endpointEnvio) {
+  if (!window.CONFIG?.endpointEnvio) {
     definirStatus("Endpoint do Flow não configurado.", "error");
     return;
   }
@@ -129,13 +165,10 @@ async function enviarElogio(evento) {
 
   try {
     const payload = {
-      "de": de,
-      "para": para,
-      "mensagem": mensagem
+      de: de,
+      para: para,
+      mensagem: mensagem
     };
-
-    console.log("Payload enviado:", payload);
-    console.log("Endpoint usado:", window.CONFIG.endpointEnvio);
 
     const resposta = await fetch(window.CONFIG.endpointEnvio, {
       method: "POST",
@@ -148,12 +181,14 @@ async function enviarElogio(evento) {
 
     if (!resposta.ok) {
       const textoErro = await resposta.text();
-      console.error("Erro HTTP:", resposta.status, textoErro);
+      console.error("Erro HTTP envio:", resposta.status, textoErro);
       throw new Error(`Erro no envio: ${resposta.status}`);
     }
 
     definirStatus("Elogio enviado com sucesso!", "success");
     formulario.reset();
+
+    await carregarMural();
   } catch (erro) {
     console.error("Erro no envio", erro);
     definirStatus("Erro ao enviar. Tente novamente.", "error");

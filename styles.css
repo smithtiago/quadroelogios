@@ -24,12 +24,14 @@
   --radius: 2px;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   background: var(--bg-page);
   color: var(--text);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  overflow: hidden;
 }
 
 body {
@@ -47,34 +49,36 @@ body {
 }
 
 .elogios-hero {
-  padding: 32px;
+  padding: 22px 28px;
   border-bottom: 1px solid var(--line-soft);
   background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 56%, var(--hero-end) 100%);
 }
 
 .elogios-hero__content {
-  max-width: 720px;
+  max-width: 760px;
 }
 
 .elogios-hero h1 {
   margin: 0;
-  font-size: 52px;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   color: #ffffff;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .elogios-hero p {
-  margin: 14px 0 0;
-  font-size: 16px;
-  line-height: 1.65;
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
   color: rgba(255, 255, 255, 0.84);
+  max-width: 760px;
 }
 
 .elogios-grid {
   display: grid;
   grid-template-columns: 360px 1fr;
+  min-height: 720px;
 }
 
 .elogios-formulario {
@@ -163,7 +167,7 @@ body {
 }
 
 .campo textarea {
-  resize: vertical;
+  resize: none;
   min-height: 132px;
 }
 
@@ -220,13 +224,34 @@ body {
 
 .elogios-mural {
   padding: 28px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow: hidden;
 }
 
-.cards-grid {
+.slider-viewport {
+  position: relative;
+  margin-top: 22px;
+  height: 500px;
+  overflow: hidden;
+}
+
+.cards-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.55s ease;
+  will-change: transform;
+}
+
+.cards-page {
+  min-width: 100%;
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
-  margin-top: 22px;
+  align-content: start;
 }
 
 .card-elogiado {
@@ -236,6 +261,7 @@ body {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(36, 35, 98, 0.03);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 220px;
 }
 
 .card-elogiado:hover {
@@ -350,7 +376,6 @@ body {
 }
 
 .estado-vazio {
-  grid-column: 1 / -1;
   border: 1px dashed #ccd5e8;
   border-radius: var(--radius);
   background: #fafbfe;
@@ -360,9 +385,62 @@ body {
   font-size: 15px;
 }
 
+.slider-controles {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.slider-bullets {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slider-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #c8d2e8;
+  transition: all 0.25s ease;
+}
+
+.slider-bullet.ativo {
+  width: 22px;
+  background: var(--brand);
+}
+
+.slider-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.slider-btn {
+  border: 1px solid #dce3f1;
+  background: #ffffff;
+  color: var(--brand);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.slider-btn:hover {
+  background: #f7f9fe;
+}
+
 @media (max-width: 980px) {
+  html,
+  body {
+    overflow: auto;
+  }
+
   .elogios-grid {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .elogios-formulario {
@@ -370,12 +448,29 @@ body {
     border-bottom: 1px solid var(--line-soft);
   }
 
-  .cards-grid {
+  .slider-viewport {
+    height: auto;
+    overflow: visible;
+  }
+
+  .cards-track {
+    display: block;
+    transform: none !important;
+  }
+
+  .cards-page {
+    min-width: auto;
+    width: 100%;
     grid-template-columns: 1fr;
+    margin-bottom: 16px;
+  }
+
+  .slider-controles {
+    display: none;
   }
 
   .elogios-hero h1 {
-    font-size: 40px;
+    font-size: 28px;
   }
 }
 
@@ -391,7 +486,11 @@ body {
   }
 
   .elogios-hero h1 {
-    font-size: 32px;
+    font-size: 24px;
+  }
+
+  .elogios-hero p {
+    font-size: 12px;
   }
 
   .bloco-titulo h2,
